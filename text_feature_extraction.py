@@ -20,15 +20,15 @@ def preprocess(sent):
 	sent = " ".join([ps.stem(words) for words in sent])
 	return sent
 
-def unigram(utterance):
+def tokenized(utterance, tokenizedarr):
+	for sent in utterance:
+		tokenizedarr.append(word_tokenize(sent))
+
+def unigram(utterance, utterance_tokenized):
 	n = len(utterance)
 	tokensCombined = []
-	tokenizedUtterances = []
 
-	for u in utterance:
-		tokenizedUtterances.append(word_tokenize(u))
-
-	for i, tokens in enumerate(tokenizedUtterances):
+	for i, tokens in enumerate(utterance_tokenized):
 		tokensCombined.extend(tokens)
 	print("hello")
 
@@ -46,29 +46,41 @@ def unigram(utterance):
 	# pickle.dump(wordIndex, f)
 
 	unigramVector = np.zeros([n, lenfrequencyDict], dtype=np.bool_)
-	for i, tokens in enumerate(tokenizedUtterances):
+	for i, tokens in enumerate(utterance_tokenized):
 		arr = np.zeros([lenfrequencyDict])
 		for token in tokens:
 			if token in wordIndex:
 				arr[wordIndex[token]] = 1
-		unigramVector[i] = arr
+		unigramVector[i] = arr 
 	return unigramVector
 
+
+
 if __name__ == "__main__":
+	train_utterance_tokenized = []
 	train_df = pd.read_csv("text_data/train_sent_emo.csv")
-	# train_utterance = train_df["Utterance"].apply(preprocess)
-	train_utterance = train_df["Utterance"]
+	# train_utterance = train_df["Utterance"].apply(preprocess).values.tolist()
+	train_utterance = train_df["Utterance"].values.tolist()
 	train_emo = train_df["Emotion"]
+	tokenized(train_utterance, train_utterance_tokenized)
 
+	# dev_utterance_tokenized = []
 	# dev_df = pd.read_csv("text_data/dev_sent_emo.csv")
-	# dev_utterance = dev_df["Utterance"].apply(preprocess)
-	# dev_emo = dev_df["Emotion"]
+	# dev_utterance = dev_df["Utterance"].apply(preprocess).values.tolist()
+	# dev_utterance = dev_df["Utterance"].values.tolist()
+	# dev_emo = dev_df["Emotion"]	
+	# tokenized(dev_utterance, dev_utterance_tokenized)
 
+	# test_utterance_tokenized = []
 	# test_df = pd.read_csv("text_data/test_sent_emo.csv")
-	# test_utterance = test_df["Utterance"].apply(preprocess)
+	# test_utterance = test_df["Utterance"].apply(preprocess).values.tolist()
+	# test_utterance = test_df["Utterance"].values.tolist()
 	# test_emo = test_df["Emotion"]
+	# tokenized(test_utterance, test_utterance_tokenized)
 
-	unigramVector_train = unigram(train_utterance.values.tolist())
+
+
+	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
 
 
 
