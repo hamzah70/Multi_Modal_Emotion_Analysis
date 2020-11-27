@@ -54,6 +54,43 @@ def unigram(utterance, utterance_tokenized):
 		unigramVector[i] = arr 
 	return unigramVector
 
+def bigram(utterance, utterance_tokenized):
+	print("hello2")
+	n = len(utterance)
+	bigraminUtterance= []
+	allbigrams = []
+	for tokenized in utterance_tokenized:
+		bigrams = [' '.join(grams) for grams in ngrams(tokenized, 2)]
+		bigraminUtterance.append(bigrams)
+		allbigrams.extend(bigrams)
+
+	print("hello2")
+	analysis = nltk.FreqDist(allbigrams)
+	del allbigrams
+	frequencybigramDict = dict([(m, n) for m, n in analysis.items() if n > 10])
+	lenfrequencybigramDict = len(frequencybigramDict)
+	print(lenfrequencybigramDict)
+	bigramIndexDict = {}
+	print("hello2")
+
+	for i, key in enumerate(frequencybigramDict.keys()):
+		bigramIndexDict[key] = i
+	frequencybigramDict.clear()
+
+	# f = open("dict/bigram_dict.pkl", "wb")
+	# pickle.dump(bigramIndexDict, f)
+	# print("hello2")
+
+	bigramVector = np.zeros([n, lenfrequencybigramDict], dtype=np.bool_)
+	for i, bigramUtterance in enumerate(bigraminUtterance):
+		arr = np.zeros([lenfrequencybigramDict])
+		for bigram in bigramUtterance:
+			if bigram in bigramIndexDict:
+				arr[bigramIndexDict[bigram]] = 1
+		bigramVector[i] = arr
+
+	del bigraminUtterance
+
 
 
 if __name__ == "__main__":
@@ -81,6 +118,7 @@ if __name__ == "__main__":
 
 
 	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
+	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
 
 
 
