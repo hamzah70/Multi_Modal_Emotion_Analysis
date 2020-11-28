@@ -17,7 +17,7 @@ def svmModel(X, Y):
 def randomForestModel(X, Y):
 	n = len(X)
 	p = int(0.7 * n)
-	rf = RandomForestClassifier()
+	rf = RandomForestClassifier(max_depth=50)
 	rf.fit(X[:p], Y[:p])
 	prediction = rf.predict(X[p:])
 	accuracy = accuracy_score(prediction, Y[p:])

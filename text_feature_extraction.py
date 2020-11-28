@@ -14,8 +14,8 @@ import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
 
-
 from lexiconFeatureVector import lexicons
+from model_train import *
 
 cachedStopWords = set(stopwords.words("english"))
 
@@ -134,22 +134,22 @@ if __name__ == "__main__":
 	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
 	lexicon_train = lexicons(train_utterance_tokenized)
 
-	# vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0])])
-	# for i in range(len(train_utterance)):
-	# 	vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i]))
+	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0])])
+	for i in range(len(train_utterance)):
+		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i]))
 		
-	# start = time.time()
-	# print("Before PCA: ", vector.shape)
-	# pca = PCA(n_components=200)
-	# pca.fit(vector)
-	# vector = pca.transform(vector)
-	# end = time.time()
-	# print("time taken to pca: ", end-start)
+	start = time.time()
+	print("Before PCA: ", vector.shape)
+	pca = PCA(n_components=200)
+	pca.fit(vector)
+	vector = pca.transform(vector)
+	end = time.time()
+	print("time taken to pca: ", end-start)
 
-	# label_encoder = LabelEncoder()
-	# train_emo = label_encoder.fit_transform(train_emo)
+	label_encoder = LabelEncoder()
+	train_emo = label_encoder.fit_transform(train_emo)
 	# svmModel(vector, train_emo)
-	# randomForestModel(vector, train_emo)
+	randomForestModel(vector, train_emo)
 
 
 
