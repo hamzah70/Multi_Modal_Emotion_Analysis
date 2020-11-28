@@ -102,30 +102,6 @@ def bigram(utterance, utterance_tokenized):
 	del bigraminUtterance
 	return bigramVector
 
-def dictToarr():
-    train_utterance_tokenized = []
-    train_df = pd.read_csv("text_data/train_sent_emo.csv")
-
-    train_dialogue = train_df["Dialogue_ID"].values.tolist()
-    train_utterance = train_df["Utterance_ID"].values.tolist()
-
-    f = open("audio_features_dict.p", "rb")
-    d = pickle.load(f)
-
-    audioFeature = np.zeros([len(train_dialogue), 528])
-    for i in range(len(train_dialogue)):
-        dialogueID = train_dialogue[i]
-        utteranceID = train_utterance[i]
-        fname = "dia" + str(dialogueID) + "_utt" + str(utteranceID) + ".mp4"
-        try:
-            audioFeature[i] = d[fname]
-        except:
-            audioFeature[i]=np.zeros([528])
-
-    return audioFeature
-
-
-
 if __name__ == "__main__":
 	train_utterance_tokenized = []
 	train_df = pd.read_csv("text_data/train_sent_emo.csv")
@@ -158,9 +134,9 @@ if __name__ == "__main__":
 	lexicon_train = lexicons(train_utterance_tokenized)
 	audio_train = audio_feature_extraction.dictToarr()
 
-	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0])])
+	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0]) + len(audio_train[0])])
 	for i in range(len(train_utterance)):
-		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i]))
+		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i], audio_train[i]))
 
 	start = time.time()
 	print("Before PCA: ", vector.shape)
