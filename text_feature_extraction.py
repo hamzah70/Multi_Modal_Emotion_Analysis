@@ -17,6 +17,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from lexiconFeatureVector import lexicons
 from model_train import *
+import audio_feature_extraction
 
 cachedStopWords = set(stopwords.words("english"))
 
@@ -39,7 +40,7 @@ def unigram(utterance, utterance_tokenized):
 
 	for i, tokens in enumerate(utterance_tokenized):
 		tokensCombined.extend(tokens)
-	print("hello")
+	# print("hello")
 
 	analysis = nltk.FreqDist(tokensCombined)
 	del tokensCombined
@@ -64,7 +65,7 @@ def unigram(utterance, utterance_tokenized):
 	return unigramVector
 
 def bigram(utterance, utterance_tokenized):
-	print("hello2")
+	# print("hello2")
 	n = len(utterance)
 	bigraminUtterance= []
 	allbigrams = []
@@ -73,14 +74,14 @@ def bigram(utterance, utterance_tokenized):
 		bigraminUtterance.append(bigrams)
 		allbigrams.extend(bigrams)
 
-	print("hello2")
+	# print("hello2")
 	analysis = nltk.FreqDist(allbigrams)
 	del allbigrams
 	frequencybigramDict = dict([(m, n) for m, n in analysis.items() if n > 10])
 	lenfrequencybigramDict = len(frequencybigramDict)
-	print(lenfrequencybigramDict)
+	# print(lenfrequencybigramDict)
 	bigramIndexDict = {}
-	print("hello2")
+	# print("hello2")
 
 	for i, key in enumerate(frequencybigramDict.keys()):
 		bigramIndexDict[key] = i
@@ -155,11 +156,12 @@ if __name__ == "__main__":
 	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
 	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
 	lexicon_train = lexicons(train_utterance_tokenized)
+	audio_train = audio_feature_extraction.dictToarr()
 
 	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0])])
 	for i in range(len(train_utterance)):
 		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i]))
-		
+
 	start = time.time()
 	print("Before PCA: ", vector.shape)
 	pca = PCA(n_components=200)
@@ -168,12 +170,9 @@ if __name__ == "__main__":
 	end = time.time()
 	print("time taken to pca: ", end-start)
 
-	audio_features=dictToarr()
-	vector=np.append(vector,audio_features,axis=1)
-	print(vector.shape)
 	label_encoder = LabelEncoder()
 	train_emo = label_encoder.fit_transform(train_emo)
-	# svmModel(vector, train_emo)
+	svmModel(vector, train_emo)
 	randomForestModel(vector, train_emo)
 
 

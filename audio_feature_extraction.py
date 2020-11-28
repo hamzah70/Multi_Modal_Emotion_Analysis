@@ -23,7 +23,7 @@ def dictToarr():
         utteranceID = train_utterance[i]
         fname = "dia" + str(dialogueID) + "_utt" + str(utteranceID) + ".mp4"
         try:
-            audioFeature[i] = d[fname]
+            audioFeature[i] = np.nan_to_num(d[fname])
         except:
             audioFeature[i]=np.zeros([528])
 
