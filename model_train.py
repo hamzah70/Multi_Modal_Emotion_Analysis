@@ -1,5 +1,6 @@
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
@@ -22,3 +23,12 @@ def randomForestModel(X, Y):
 	prediction = rf.predict(X[p:])
 	accuracy = accuracy_score(prediction, Y[p:])
 	print("Random Forest Regression Accuracy: ", accuracy)
+
+def mlpModel(X, Y):
+	n = len(X)
+	p = int(0.7 * n)
+	classifier = MLPClassifier(hidden_layer_sizes=(150,100,50), max_iter=300, activation = 'relu', solver='adam', random_state=1)
+	classifier.fit(X[:p], Y[:p])
+	prediction = classifier.predict(X[p:])
+	accuracy = accuracy_score(prediction, Y[p:])
+	print("MLP Classifier Accuracy: ", accuracy)

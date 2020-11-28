@@ -14,6 +14,8 @@ import pickle
 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_selection import f_classif, SelectKBest
+from sklearn.preprocessing import StandardScaler
 
 from lexiconFeatureVector import lexicons
 from model_train import *
@@ -138,18 +140,25 @@ if __name__ == "__main__":
 	for i in range(len(train_utterance)):
 		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i], audio_train[i]))
 
+	sel = SelectKBest(f_classif, k=500)
+	vector = sel.fit_transform(vector, train_emo)
+
+	sc = StandardScaler()
+	vector = sc.fit_transform(vector)
+
 	start = time.time()
 	print("Before PCA: ", vector.shape)
-	pca = PCA(n_components=200)
+	pca = PCA(n_components=0.95)
 	pca.fit(vector)
 	vector = pca.transform(vector)
 	end = time.time()
-	print("time taken to pca: ", end-start)
+	print("time taken to pca: ", end-start, "  ", vector.shape)
 
 	label_encoder = LabelEncoder()
 	train_emo = label_encoder.fit_transform(train_emo)
 	svmModel(vector, train_emo)
 	randomForestModel(vector, train_emo)
+	mlpModel(vector, train_emo)
 
 
 
