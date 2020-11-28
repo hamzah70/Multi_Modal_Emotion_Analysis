@@ -10,6 +10,7 @@ from nltk.stem import WordNetLemmatizer
 
 import numpy as np
 import pandas as pd
+import pickle
 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
@@ -100,6 +101,27 @@ def bigram(utterance, utterance_tokenized):
 	del bigraminUtterance
 	return bigramVector
 
+def dictToarr():
+    train_utterance_tokenized = []
+    train_df = pd.read_csv("text_data/train_sent_emo.csv")
+
+    train_dialogue = train_df["Dialogue_ID"].values.tolist()
+    train_utterance = train_df["Utterance_ID"].values.tolist()
+
+    f = open("audio_features_dict.p", "rb")
+    d = pickle.load(f)
+
+    audioFeature = np.zeros([len(train_dialogue), 528])
+    for i in range(len(train_dialogue)):
+        dialogueID = train_dialogue[i]
+        utteranceID = train_utterance[i]
+        fname = "dia" + str(dialogueID) + "_utt" + str(utteranceID) + ".mp4"
+        try:
+            audioFeature[i] = d[fname]
+        except:
+            audioFeature[i]=np.zeros([528])
+
+    return audioFeature
 
 
 
@@ -146,6 +168,9 @@ if __name__ == "__main__":
 	end = time.time()
 	print("time taken to pca: ", end-start)
 
+	audio_features=dictToarr()
+	vector=np.append(vector,audio_features,axis=1)
+	print(vector.shape)
 	label_encoder = LabelEncoder()
 	train_emo = label_encoder.fit_transform(train_emo)
 	# svmModel(vector, train_emo)
