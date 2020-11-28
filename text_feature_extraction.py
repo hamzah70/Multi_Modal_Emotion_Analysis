@@ -21,6 +21,8 @@ from lexiconFeatureVector import lexicons
 from model_train import *
 import audio_feature_extraction
 
+from sent2vec.vectorizer import Vectorizer
+
 cachedStopWords = set(stopwords.words("english"))
 
 def preprocess(sent):
@@ -104,6 +106,11 @@ def bigram(utterance, utterance_tokenized):
 	del bigraminUtterance
 	return bigramVector
 
+def sent2vec_feature(utterances):
+	vectorizer = Vectorizer()
+	vectorizer.bert(utterances)
+	return vectorizer.vectors
+
 if __name__ == "__main__":
 	train_utterance_tokenized = []
 	train_df = pd.read_csv("text_data/train_sent_emo.csv")
@@ -134,11 +141,12 @@ if __name__ == "__main__":
 	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
 	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
 	lexicon_train = lexicons(train_utterance_tokenized)
+	sent2vec_train = sent2vec_feature(train_utterance)
 	audio_train = audio_feature_extraction.dictToarr()
 
-	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0]) + len(audio_train[0])])
+	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(sent2vec_train[0]) + len(lexicon_train[0]) + len(audio_train[0])])
 	for i in range(len(train_utterance)):
-		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i], audio_train[i]))
+		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], sent2vec_train[i], lexicon_train[i], audio_train[i]))
 
 	sel = SelectKBest(f_classif, k=500)
 	vector = sel.fit_transform(vector, train_emo)
