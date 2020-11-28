@@ -1,9 +1,38 @@
 import opensmile
 import time
 import os
-import numpy
+import numpy as np
+import pandas as pd
 import pickle
 s = time.time()
+
+def dictToarr():
+
+    train_utterance_tokenized = []
+    train_df = pd.read_csv("text_data/train_sent_emo.csv")
+    print(train_df.shape)
+
+    train_dialogue = train_df["Dialogue_ID"].values.tolist()
+    train_utterance = train_df["Utterance_ID"].values.tolist()
+
+    f = open("audio_features.p", "rb")
+    d = pickle.load(f)
+
+    audioFeature = np.zeros([len(train_dialogue), 528])
+    for i in range(len(train_dialogue)):
+        dialogueID = train_dialogue[i]
+        utteranceID = train_utterance[i]
+        fname = "dia" + str(dialogueID) + "_utt" + str(utteranceID) + ".mp4"
+        try:
+            audioFeature[i] = d[fname]
+        except:
+            audioFeature[i]=np.zeros([528])
+
+    return audioFeature
+
+# dictToarr()
+exit(0)
+
 
 smile2 = opensmile.Smile(feature_set=opensmile.FeatureSet.eGeMAPSv01b,
                          feature_level=opensmile.FeatureLevel.Functionals, num_channels=2)
