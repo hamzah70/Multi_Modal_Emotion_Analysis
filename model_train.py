@@ -5,8 +5,10 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
-
+import tensorflow as tf
 import pickle
+from tensorflow.keras import datasets, layers, models
+
 
 
 
@@ -57,3 +59,25 @@ def mlpModel(X, Y):
 
     f = open("models/mlp.pkl", "wb")
     pickle.dump(classifier, f)
+
+def cnn(X,Y):
+    n = len(X)
+    p = int(0.7 * n)
+    model = models.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    # print(model.summary())
+    model.add(layers.Flatten())
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dense(10))
+    model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+    history = model.fit(X[:p], Y[:p], epochs=10, 
+                    validation_data=(X[p:], Y[p:]))
+    test_loss, test_acc = model.evaluate(X[p:],  Y[p:], verbose=2)
+    print("CNN accuracy: ",test_acc)

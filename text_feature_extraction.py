@@ -186,9 +186,10 @@ if __name__ == "__main__":
 	pickle.dump(pca, f3)
 	pickle.dump(label_encoder, f4)
 
-	svmModel(vector, train_emo)
-	randomForestModel(vector, train_emo)
-	mlpModel(vector, train_emo)
+	# svmModel(vector, train_emo)
+	# randomForestModel(vector, train_emo)
+	# mlpModel(vector, train_emo)
+	cnn(vector,train_emo)
 
 
 
