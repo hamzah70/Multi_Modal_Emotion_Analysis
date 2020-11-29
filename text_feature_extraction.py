@@ -111,6 +111,11 @@ def sent2vec_feature(utterances):
 	vectorizer.bert(utterances)
 	return vectorizer.vectors
 
+def extend(arr1, arr2):
+	for i in range(len(arr2)):
+		arr1 = np.append(arr1, arr2[i], 0)
+		
+
 if __name__ == "__main__":
 	train_utterance_tokenized = []
 	train_df = pd.read_csv("text_data/train_sent_emo.csv")
@@ -119,12 +124,12 @@ if __name__ == "__main__":
 	train_emo = train_df["Emotion"].values.tolist()
 	tokenized(train_utterance, train_utterance_tokenized)
 
-	# dev_utterance_tokenized = []
-	# dev_df = pd.read_csv("text_data/dev_sent_emo.csv")
+	dev_utterance_tokenized = []
+	dev_df = pd.read_csv("text_data/dev_sent_emo.csv")
 	# dev_utterance = dev_df["Utterance"].apply(preprocess).values.tolist()
-	# dev_utterance = dev_df["Utterance"].values.tolist()
-	# dev_emo = dev_df["Emotion"].values.tolist()
-	# tokenized(dev_utterance, dev_utterance_tokenized)
+	dev_utterance = dev_df["Utterance"].values.tolist()
+	dev_emo = dev_df["Emotion"].values.tolist()
+	tokenized(dev_utterance, dev_utterance_tokenized)
 
 	# test_utterance_tokenized = []
 	# test_df = pd.read_csv("text_data/test_sent_emo.csv")
@@ -137,12 +142,36 @@ if __name__ == "__main__":
 	# print(set(train_emo))
 	# print(train_emo.count("neutral"))
 
+	train_utterance.extend(dev_utterance)
+	train_emo.extend(dev_emo)
+	train_utterance_tokenized.extend(dev_utterance_tokenized)
+
 
 	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
 	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
 	lexicon_train = lexicons(train_utterance_tokenized)
 	# sent2vec_train = sent2vec_feature(train_utterance)
-	audio_train = audio_feature_extraction.dictToarr()
+	audio_train = audio_feature_extraction.dictToarr("train")
+	audio_dev = audio_feature_extraction.dictToarr("dev")
+
+	l1 = audio_train.tolist()
+	l2 = audio_dev.tolist()
+	l1.extend(l2)
+
+	audio_train = np.array(l1)
+
+	# unigramVector_dev = unigram(dev_utterance, dev_utterance_tokenized)
+	# bigramVector_dev = bigram(dev_utterance, dev_utterance_tokenized)
+	# lexicon_dev = lexicons(dev_utterance_tokenized)
+	# # sent2vec_train = sent2vec_feature(train_utterance)
+	# audio_dev = audio_feature_extraction.dictToarr("dev")
+
+	# extend(unigramVector_train, unigramVector_dev)
+	# extend(bigramVector_train, bigramVector_dev)
+	# extend(lexicon_train, lexicon_dev)
+	# extend(audio_train, audio_dev)
+
+
 
 	f = open("features/unigramVector_train.pkl", "wb")
 	f = open("features/bigramVector_train.pkl", "wb")
@@ -171,6 +200,7 @@ if __name__ == "__main__":
 	vector = pca.transform(vector)
 	end = time.time()
 	print("time taken to pca: ", end-start, "  ", vector.shape)
+
 
 	label_encoder = LabelEncoder()
 	label_encoder.fit(train_emo)
