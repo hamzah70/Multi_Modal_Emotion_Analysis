@@ -64,7 +64,7 @@ def audioFeature():
         if i%100==0:
             print(i)
 
-    pickle.dump(X_dict, open('audio_features.p', 'wb'))
+    pickle.dump(X_dict, open('audio_features_train.p', 'wb'))
 
     print(time.time()-s)
 
