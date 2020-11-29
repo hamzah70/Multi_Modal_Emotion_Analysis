@@ -9,6 +9,7 @@ from sklearn.metrics import f1_score
 import pickle
 
 
+
 def svmModel(X, Y):
     n = len(X)
     p = int(0.7 * n)
