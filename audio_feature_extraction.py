@@ -14,7 +14,7 @@ def dictToarr():
     train_dialogue = train_df["Dialogue_ID"].values.tolist()
     train_utterance = train_df["Utterance_ID"].values.tolist()
 
-    f = open("audio_features_dict.p", "rb")
+    f = open("dict/audio_features_train.p", "rb")
     d = pickle.load(f)
 
     audioFeature = np.zeros([len(train_dialogue), 528])
@@ -69,7 +69,7 @@ def audioFeature():
     print(time.time()-s)
 
 if __name__ == '__main__':
-    if not os.path.isfile('audio_features_dict.p'):
+    if not os.path.isfile('dict/audio_features_train.p'):
         print("hello")
         audioFeature()
     dictToarr()

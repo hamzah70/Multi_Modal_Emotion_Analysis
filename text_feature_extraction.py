@@ -56,8 +56,8 @@ def unigram(utterance, utterance_tokenized):
 	frequencyDict.clear()
 	print(lenfrequencyDict)
 
-	# f = open("dict/unigram_dict.pkl", "wb")
-	# pickle.dump(wordIndex, f)
+	f = open("dict/unigram_dict.pkl", "wb")
+	pickle.dump(wordIndex, f)
 
 	unigramVector = np.zeros([n, lenfrequencyDict], dtype=np.bool_)
 	for i, tokens in enumerate(utterance_tokenized):
@@ -91,8 +91,8 @@ def bigram(utterance, utterance_tokenized):
 		bigramIndexDict[key] = i
 	frequencybigramDict.clear()
 
-	# f = open("dict/bigram_dict.pkl", "wb")
-	# pickle.dump(bigramIndexDict, f)
+	f = open("dict/bigram_dict.pkl", "wb")
+	pickle.dump(bigramIndexDict, f)
 	# print("hello2")
 
 	bigramVector = np.zeros([n, lenfrequencybigramDict], dtype=np.bool_)
@@ -141,12 +141,22 @@ if __name__ == "__main__":
 	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
 	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
 	lexicon_train = lexicons(train_utterance_tokenized)
-	sent2vec_train = sent2vec_feature(train_utterance)
+	# sent2vec_train = sent2vec_feature(train_utterance)
 	audio_train = audio_feature_extraction.dictToarr()
 
-	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(sent2vec_train[0]) + len(lexicon_train[0]) + len(audio_train[0])])
+	f = open("features/unigramVector_train.pkl", "wb")
+	f = open("features/bigramVector_train.pkl", "wb")
+	f = open("features/lexicon_train.pkl", "wb")
+	f = open("features/audio_train.pkl", "wb")
+
+	pickle.dump(unigramVector_train, f)
+	pickle.dump(bigramVector_train, f)
+	pickle.dump(lexicon_train, f)
+	pickle.dump(audio_train, f)
+
+	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0]) + len(audio_train[0])])
 	for i in range(len(train_utterance)):
-		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], sent2vec_train[i], lexicon_train[i], audio_train[i]))
+		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i], audio_train[i]))
 
 	sel = SelectKBest(f_classif, k=500)
 	vector = sel.fit_transform(vector, train_emo)
@@ -163,7 +173,19 @@ if __name__ == "__main__":
 	print("time taken to pca: ", end-start, "  ", vector.shape)
 
 	label_encoder = LabelEncoder()
-	train_emo = label_encoder.fit_transform(train_emo)
+	label_encoder.fit(train_emo)
+	train_emo = label_encoder.transform(train_emo)
+
+	f1 = open("models/kbest.pkl", "wb")
+	f2 = open("models/scaler.pkl", "wb")
+	f3 = open("models/pca.pkl", "wb")
+	f4 = open("models/labelencoder.pkl", "wb")
+
+	pickle.dump(sel, f1)
+	pickle.dump(sc, f2)
+	pickle.dump(pca, f3)
+	pickle.dump(label_encoder, f4)
+
 	svmModel(vector, train_emo)
 	randomForestModel(vector, train_emo)
 	mlpModel(vector, train_emo)

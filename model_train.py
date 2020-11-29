@@ -5,6 +5,8 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
 
+import pickle
+
 def svmModel(X, Y):
 	n = len(X)
 	p = int(0.7 * n)
@@ -15,6 +17,9 @@ def svmModel(X, Y):
 	accuracy = accuracy_score(prediction, Y[p:])
 	print("SVM Accuracy: ", accuracy)
 
+	f = open("models/svm.pkl", "wb")
+	pickle.dump(SVM, f)
+
 def randomForestModel(X, Y):
 	n = len(X)
 	p = int(0.7 * n)
@@ -24,6 +29,9 @@ def randomForestModel(X, Y):
 	accuracy = accuracy_score(prediction, Y[p:])
 	print("Random Forest Regression Accuracy: ", accuracy)
 
+	f = open("models/randomforest.pkl", "wb")
+	pickle.dump(rf, f)
+
 def mlpModel(X, Y):
 	n = len(X)
 	p = int(0.7 * n)
@@ -32,3 +40,7 @@ def mlpModel(X, Y):
 	prediction = classifier.predict(X[p:])
 	accuracy = accuracy_score(prediction, Y[p:])
 	print("MLP Classifier Accuracy: ", accuracy)
+
+	f = open("models/mlp.pkl", "wb")
+	pickle.dump(classifier, f)
+
