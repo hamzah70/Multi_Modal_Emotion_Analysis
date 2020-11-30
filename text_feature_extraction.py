@@ -136,30 +136,10 @@ if __name__ == "__main__":
 	dev_emo = dev_df["Emotion"].values.tolist()
 	tokenized(dev_utterance, dev_utterance_tokenized)
 
-	train_sentiment.extend(dev_sentiment)
-
-	le = LabelEncoder()
-	le.fit(train_sentiment)
-	train_sentiment = le.transform(train_sentiment)
-
-	f = open("models/onehot.pkl", "wb")
-	pickle.dump(le, f)
-
-	# test_utterance_tokenized = []
-	# test_df = pd.read_csv("text_data/test_sent_emo.csv")
-	# test_utterance = test_df["Utterance"].apply(preprocess).values.tolist()
-	# test_utterance = test_df["Utterance"].values.tolist()
-	# test_emo = test_df["Emotion"].values.tolist()
-	# tokenized(test_utterance, test_utterance_tokenized)
-
-	# print(len(set(train_emo)))
-	# print(set(train_emo))
-	# print(train_emo.count("neutral"))
-
 	train_utterance.extend(dev_utterance)
 	train_emo.extend(dev_emo)
 	train_utterance_tokenized.extend(dev_utterance_tokenized)
-
+	train_sentiment.extend(dev_sentiment)
 
 	unigramVector_train = unigram(train_utterance, train_utterance_tokenized)
 	bigramVector_train = bigram(train_utterance, train_utterance_tokenized)
@@ -174,18 +154,11 @@ if __name__ == "__main__":
 
 	audio_train = np.array(l1)
 
-	# unigramVector_dev = unigram(dev_utterance, dev_utterance_tokenized)
-	# bigramVector_dev = bigram(dev_utterance, dev_utterance_tokenized)
-	# lexicon_dev = lexicons(dev_utterance_tokenized)
-	# # sent2vec_train = sent2vec_feature(train_utterance)
-	# audio_dev = audio_feature_extraction.dictToarr("dev")
-
-	# extend(unigramVector_train, unigramVector_dev)
-	# extend(bigramVector_train, bigramVector_dev)
-	# extend(lexicon_train, lexicon_dev)
-	# extend(audio_train, audio_dev)
-
-
+	le = LabelEncoder()
+	le.fit(train_sentiment)
+	train_sentiment = le.transform(train_sentiment)
+	f = open("models/onehot.pkl", "wb")
+	pickle.dump(le, f)
 
 	f = open("features/unigramVector_train.pkl", "wb")
 	f = open("features/bigramVector_train.pkl", "wb")
