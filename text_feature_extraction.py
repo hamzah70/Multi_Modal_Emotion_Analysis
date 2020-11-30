@@ -207,8 +207,8 @@ if __name__ == "__main__":
 	randomForestModel(vector, train_emo)
 	mlpModel(vector, train_emo)
 	# gboost(vector, train_emo)
-	# adaboost(vector, train_emo)
-	# knearestNeighboursModel(vector, train_emo)
+	adaboost(vector, train_emo)
+	knearestNeighboursModel(vector, train_emo)
 
 
 
