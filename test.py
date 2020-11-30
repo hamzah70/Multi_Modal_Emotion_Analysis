@@ -19,7 +19,7 @@ def svmPredict(X, Y):
 	a = balanced_accuracy_score(prediction, Y)
 	print("SVM Accuracy: ", accuracy)
 	print("weighted: ", a)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 
 def randomForestPredict(X, Y):
 	f = open("models/randomforest.pkl", "rb")
@@ -31,7 +31,7 @@ def randomForestPredict(X, Y):
 	print("Random Forest Regression Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("RF F1 Score:", f1)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 
 def mlpPredict(X, Y):
 	f = open("models/mlp.pkl", "rb")
@@ -44,7 +44,7 @@ def mlpPredict(X, Y):
 	print("MLP Classifier Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("MLP F1 Score:", f1)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 
 def gboostPredict(X, Y):
 	f = open("models/gboost.pkl", "rb")
@@ -57,7 +57,7 @@ def gboostPredict(X, Y):
 	print("Gboost Classifier Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("Gboost F1 Score:", f1)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 
 def adaboostPredict(X, Y):
 	f = open("models/adaboost.pkl", "rb")
@@ -70,7 +70,7 @@ def adaboostPredict(X, Y):
 	print("Ada Boost Classifier Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("Ada Boost F1 Score:", f1)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 
 def naiveBayesPredict(X, Y):
 	f = open("models/naiveBayes.pkl", "rb")
@@ -81,7 +81,7 @@ def naiveBayesPredict(X, Y):
 
 	print('Naive Bayes Accuracy: ', accuracy)
 	print('Naive Bayes F1 Score: ', f1)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 
 
 def knearestNeighboursPredict(X, Y):
@@ -93,7 +93,7 @@ def knearestNeighboursPredict(X, Y):
 
 	print("K nearest neighbours Accuracy: ", accuracy)
 	print("K nearest neighbours f1: ", f1)
-	print(classification_report(Y, prediction))
+	print(classification_report(Y, prediction, zero_division=0))
 	
 
 
