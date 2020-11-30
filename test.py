@@ -9,6 +9,7 @@ from nltk.util import ngrams
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import classification_report
 
 def svmPredict(X, Y):
 	f = open("models/svm.pkl", "rb")
@@ -16,10 +17,9 @@ def svmPredict(X, Y):
 	prediction = SVM.predict(X)
 	accuracy = accuracy_score(prediction, Y)
 	a = balanced_accuracy_score(prediction, Y)
-	f1 = f1_score(prediction, Y,average='weighted')
 	print("SVM Accuracy: ", accuracy)
 	print("weighted: ", a)
-	print("SVM F1 Score:", f1)
+	print(classification_report(Y, prediction))
 
 def randomForestPredict(X, Y):
 	f = open("models/randomforest.pkl", "rb")
@@ -27,11 +27,11 @@ def randomForestPredict(X, Y):
 	prediction = rf.predict(X)
 	accuracy = accuracy_score(prediction, Y)
 	a = balanced_accuracy_score(prediction, Y)
-	f1 = f1_score(prediction, Y,average='weighted')
 
 	print("Random Forest Regression Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("RF F1 Score:", f1)
+	print(classification_report(Y, prediction))
 
 def mlpPredict(X, Y):
 	f = open("models/mlp.pkl", "rb")
@@ -44,6 +44,7 @@ def mlpPredict(X, Y):
 	print("MLP Classifier Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("MLP F1 Score:", f1)
+	print(classification_report(Y, prediction))
 
 def gboostPredict(X, Y):
 	f = open("models/gboost.pkl", "rb")
@@ -56,6 +57,7 @@ def gboostPredict(X, Y):
 	print("Gboost Classifier Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("Gboost F1 Score:", f1)
+	print(classification_report(Y, prediction))
 
 def adaboostPredict(X, Y):
 	f = open("models/adaboost.pkl", "rb")
@@ -68,6 +70,7 @@ def adaboostPredict(X, Y):
 	print("Ada Boost Classifier Accuracy: ", accuracy)
 	print("weighted: ", a)
 	print("Ada Boost F1 Score:", f1)
+	print(classification_report(Y, prediction))
 
 def naiveBayesPredict(X, Y):
 	f = open("models/naiveBayes.pkl", "rb")
@@ -78,6 +81,8 @@ def naiveBayesPredict(X, Y):
 
 	print('Naive Bayes Accuracy: ', accuracy)
 	print('Naive Bayes F1 Score: ', f1)
+	print(classification_report(Y, prediction))
+
 
 def knearestNeighboursPredict(X, Y):
 	f = open("models/knn.pkl", "rb")
@@ -88,6 +93,7 @@ def knearestNeighboursPredict(X, Y):
 
 	print("K nearest neighbours Accuracy: ", accuracy)
 	print("K nearest neighbours f1: ", f1)
+	print(classification_report(Y, prediction))
 	
 
 

@@ -24,14 +24,14 @@ def svmModel(X, Y):
 
 
 def randomForestModel(X, Y):
-	print("Random Forest Model Start")
+    print("Random Forest Model Start")
     rf = RandomForestClassifier(max_depth=50)
     rf.fit(X, Y)
     f = open("models/randomforest.pkl", "wb")
     pickle.dump(rf, f)
 
 def mlpModel(X, Y):
-	print("MLP Model Start")
+    print("MLP Model Start")
     classifier = MLPClassifier(hidden_layer_sizes=(
         150, 100, 50), max_iter=300, activation='relu', solver='adam', random_state=1)
     classifier.fit(X, Y)
@@ -40,23 +40,23 @@ def mlpModel(X, Y):
     pickle.dump(classifier, f)
 
 def adaboost(X,Y):
-	print("Ada Boost Model Start")
+    print("Ada Boost Model Start")
     clf = AdaBoostClassifier(n_estimators=100, algorithm='SAMME',learning_rate=0.001, random_state = 1)
     clf.fit(X,Y)
     f = open("models/adaboost.pkl", "wb")
     pickle.dump(clf, f)
 
 def gboost(X,Y):
-	print("Grid Boost Model Start")
+    print("Grid Boost Model Start")
     clf = GradientBoostingClassifier(n_estimators=300, criterion='mse',max_features='auto',learning_rate=0.001, loss = 'deviance', random_state = 1)
     clf.fit(X,Y)
     f = open("models/gboost.pkl", "wb")
     pickle.dump(clf, f)
 
 def knearestNeighboursModel(X, Y):
-	print("KNN Model Start")
-	knr = KNeighborsClassifier()
-	knr.fit(X, Y)
-	f = open("models/knn.pkl", "wb")
-	pickle.dump(knr, f)
+    print("KNN Model Start")
+    knr = KNeighborsClassifier()
+    knr.fit(X, Y)
+    f = open("models/knn.pkl", "wb")
+    pickle.dump(knr, f)
 
