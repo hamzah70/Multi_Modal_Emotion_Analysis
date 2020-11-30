@@ -120,15 +120,10 @@ def lexicons(utterance_tokenized):
 
     start = time.time()
     bingliu = bingliu_mpqa(utterance_tokenized, filebingliu)
-    print("bing liu complete")
     mpqa = bingliu_mpqa(utterance_tokenized, filempqa)
-    print("mpqa complete")
     sent140 = SENT140(utterance_tokenized)
-    print("sent 140 complete")
     nrcemotion = NRC_EMOTION(utterance_tokenized)
-    print("nrc emotion complete")
     nrchashtag = NRC_HASHTAG_SENT(utterance_tokenized)
-    print("nrc hashtag complete")
     end = time.time()
     print("time to calculate lexicons: ", end-start)
 
