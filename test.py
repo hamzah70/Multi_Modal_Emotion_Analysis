@@ -164,7 +164,7 @@ if __name__ == '__main__':
 	svmPredict(vector, test_emo)
 	randomForestPredict(vector, test_emo)
 	mlpPredict(vector, test_emo)
-	gboostPredict(vector, test_emo)
+	# gboostPredict(vector, test_emo)
 	adaboostPredict(vector, test_emo)
 	knearestNeighboursPredict(vector, test_emo)
 
