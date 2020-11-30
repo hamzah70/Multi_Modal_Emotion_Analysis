@@ -8,14 +8,17 @@ import numpy as np
 from nltk.util import ngrams
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
+from sklearn.metrics import balanced_accuracy_score
 
 def svmPredict(X, Y):
 	f = open("models/svm.pkl", "rb")
 	SVM = pickle.load(f)
 	prediction = SVM.predict(X)
 	accuracy = accuracy_score(prediction, Y)
+	a = balanced_accuracy_score(prediction, Y)
 	f1 = f1_score(prediction, Y,average='weighted')
 	print("SVM Accuracy: ", accuracy)
+	print("weighted: ", a)
 	print("SVM F1 Score:", f1)
 
 def randomForestPredict(X, Y):
@@ -23,9 +26,11 @@ def randomForestPredict(X, Y):
 	rf = pickle.load(f)
 	prediction = rf.predict(X)
 	accuracy = accuracy_score(prediction, Y)
+	a = balanced_accuracy_score(prediction, Y)
 	f1 = f1_score(prediction, Y,average='weighted')
 
 	print("Random Forest Regression Accuracy: ", accuracy)
+	print("weighted: ", a)
 	print("RF F1 Score:", f1)
 
 def mlpPredict(X, Y):
@@ -33,10 +38,58 @@ def mlpPredict(X, Y):
 	classifier = pickle.load(f)
 	prediction = classifier.predict(X)
 	accuracy = accuracy_score(prediction, Y)
+	a = balanced_accuracy_score(prediction, Y)
 	f1 = f1_score(prediction, Y, average='weighted')
 
 	print("MLP Classifier Accuracy: ", accuracy)
+	print("weighted: ", a)
 	print("MLP F1 Score:", f1)
+
+def gboostPredict(X, Y):
+	f = open("models/gboost.pkl", "rb")
+	classifier = pickle.load(f)
+	prediction = classifier.predict(X)
+	accuracy = accuracy_score(prediction, Y)
+	a = balanced_accuracy_score(prediction, Y)
+	f1 = f1_score(prediction, Y, average='weighted')
+
+	print("Gboost Classifier Accuracy: ", accuracy)
+	print("weighted: ", a)
+	print("Gboost F1 Score:", f1)
+
+def adaboostPredict(X, Y):
+	f = open("models/adaboost.pkl", "rb")
+	classifier = pickle.load(f)
+	prediction = classifier.predict(X)
+	accuracy = accuracy_score(prediction, Y)
+	a = balanced_accuracy_score(prediction, Y)
+	f1 = f1_score(prediction, Y, average='weighted')
+
+	print("Ada Boost Classifier Accuracy: ", accuracy)
+	print("weighted: ", a)
+	print("Ada Boost F1 Score:", f1)
+
+def naiveBayesPredict(X, Y):
+	f = open("models/naiveBayes.pkl", "rb")
+	nb = pickle.load(f)
+	prediction = nb.predict(X)
+	accuracy = accuracy_score(prediction, Y)
+	f1 = f1_score(prediction, Y, average='weighted')
+
+	print('Naive Bayes Accuracy: ', accuracy)
+	print('Naive Bayes F1 Score: ', f1)
+
+def knearestNeighboursPredict(X, Y):
+	f = open("models/knn.pkl", "rb")
+	knr = pickle.load(f)
+	prediction = knr.predict(X)
+	accuracy = accuracy_score(prediction, Y)
+	f1 = f1_score(prediction, Y, average='weighted')
+
+	print("K nearest neighbours Accuracy: ", accuracy)
+	print("K nearest neighbours f1: ", f1)
+	
+
 
 def ngram(utterances, utterances_tokenized):
 	unigramdict = pickle.load(open("dict/unigram_dict.pkl", "rb"))
@@ -67,15 +120,20 @@ if __name__ == '__main__':
 	# test_utterance = test_df["Utterance"].apply(preprocess).values.tolist()
 	test_utterance = test_df["Utterance"].values.tolist()
 	test_emo = test_df["Emotion"].values.tolist()
+	test_sentiment = test_df["Sentiment"].values.tolist()
 	text_feature_extraction.tokenized(test_utterance, test_utterance_tokenized)
+
+	f = open("models/onehot.pkl", "rb")
+	enc = pickle.load(f)
+	test_sentiment = enc.transform(test_sentiment)
 
 	unigramVector_test, bigramVector_test = ngram(test_utterance, test_utterance_tokenized)
 	lexicon_test = lexicons(test_utterance_tokenized)
 	audio_test = audio_feature_extraction.dictToarr("test")
 
-	vector = np.zeros([len(test_utterance), len(unigramVector_test[0]) + len(bigramVector_test[0]) + len(lexicon_test[0]) + len(audio_test[0])])
+	vector = np.zeros([len(test_utterance), len(unigramVector_test[0]) + len(bigramVector_test[0]) + 1 + len(lexicon_test[0]) + len(audio_test[0])])
 	for i in range(len(test_utterance)):
-		vector[i] = np.concatenate((unigramVector_test[i], bigramVector_test[i], lexicon_test[i], audio_test[i]))
+		vector[i] = np.concatenate((unigramVector_test[i], bigramVector_test[i], np.array([test_sentiment[i]]) ,lexicon_test[i], audio_test[i]))
 
 	f1 = open("models/kbest.pkl", "rb")
 	f2 = open("models/scaler.pkl", "rb")
@@ -100,6 +158,9 @@ if __name__ == '__main__':
 	svmPredict(vector, test_emo)
 	randomForestPredict(vector, test_emo)
 	mlpPredict(vector, test_emo)
+	gboostPredict(vector, test_emo)
+	adaboostPredict(vector, test_emo)
+	knearestNeighboursPredict(vector, test_emo)
 
 
 

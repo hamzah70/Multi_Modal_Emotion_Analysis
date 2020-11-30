@@ -16,6 +16,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_selection import f_classif, SelectKBest
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder
 
 from lexiconFeatureVector import lexicons
 from model_train import *
@@ -121,15 +122,28 @@ if __name__ == "__main__":
 	train_df = pd.read_csv("text_data/train_sent_emo.csv")
 	# train_utterance = train_df["Utterance"].apply(preprocess).values.tolist()
 	train_utterance = train_df["Utterance"].values.tolist()
+	train_sentiment = train_df["Sentiment"].values.tolist()
 	train_emo = train_df["Emotion"].values.tolist()
 	tokenized(train_utterance, train_utterance_tokenized)
+
+	
 
 	dev_utterance_tokenized = []
 	dev_df = pd.read_csv("text_data/dev_sent_emo.csv")
 	# dev_utterance = dev_df["Utterance"].apply(preprocess).values.tolist()
 	dev_utterance = dev_df["Utterance"].values.tolist()
+	dev_sentiment = dev_df["Sentiment"].values.tolist()
 	dev_emo = dev_df["Emotion"].values.tolist()
 	tokenized(dev_utterance, dev_utterance_tokenized)
+
+	train_sentiment.extend(dev_sentiment)
+
+	le = LabelEncoder()
+	le.fit(train_sentiment)
+	train_sentiment = le.transform(train_sentiment)
+
+	f = open("models/onehot.pkl", "wb")
+	pickle.dump(le, f)
 
 	# test_utterance_tokenized = []
 	# test_df = pd.read_csv("text_data/test_sent_emo.csv")
@@ -183,9 +197,9 @@ if __name__ == "__main__":
 	pickle.dump(lexicon_train, f)
 	pickle.dump(audio_train, f)
 
-	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + len(lexicon_train[0]) + len(audio_train[0])])
+	vector = np.zeros([len(train_utterance), len(unigramVector_train[0]) + len(bigramVector_train[0]) + 1 + len(lexicon_train[0]) + len(audio_train[0])])
 	for i in range(len(train_utterance)):
-		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], lexicon_train[i], audio_train[i]))
+		vector[i] = np.concatenate((unigramVector_train[i], bigramVector_train[i], np.array([train_sentiment[i]]), lexicon_train[i], audio_train[i]))
 
 	sel = SelectKBest(f_classif, k=500)
 	vector = sel.fit_transform(vector, train_emo)
@@ -219,7 +233,9 @@ if __name__ == "__main__":
 	svmModel(vector, train_emo)
 	randomForestModel(vector, train_emo)
 	mlpModel(vector, train_emo)
-	# cnn(vector,train_emo)
+	# gboost(vector, train_emo)
+	# adaboost(vector, train_emo)
+	# knearestNeighboursModel(vector, train_emo)
 
 
 
