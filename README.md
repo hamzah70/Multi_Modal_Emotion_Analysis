@@ -1,1 +1,5 @@
 # Multi_Modal_Emotion_Analysis
+
+Multi Modal Emotion Analysis on the MELD: Multimodal EmotionLines Dataset. MELD has more than 1400 dialogues and 13000 utterances from the Friends TV show.In MELD; Text, Audio, and Video; the 3 modalities of each dialogue were used to annotate the utterances with the most appropriate emotion category (Joy, Sadness, Fear, Surprise, Disgust, Neutral and Anger) and sentiment category (positive, negative, neutral). We use this as our dataset to form and train multimodal algorithms for the task of emotion classification. We use two modalities, text and audio from the MELD dataset to generate feature vectors and train our model. We report the F1-Score and weighted accuracy of our model.
+
+For in depth details about model take a look at [Report.pdf](https://github.com/hamzah70/Multi_Modal_Emotion_Analysis/blob/master/Report.pdf)
